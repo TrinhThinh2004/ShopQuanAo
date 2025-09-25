@@ -1,10 +1,29 @@
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+} from "react-router-dom";
+
+// layouts
+import Layout from "./components/Layout/Layout";
+
+// pages
+import Home from "./pages/Home/Home";
+
 function App() {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-blue-500">
-      <h1 className="text-4xl font-bold text-white">
-        hj    
-      </h1>
-    </div>
+    <Router>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <Layout>
+              <Home />
+            </Layout>
+          }
+        />
+      </Routes>
+    </Router>
   );
 }
 
