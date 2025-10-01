@@ -20,47 +20,45 @@ const BANNERS = [
 
 export default function Banner() {
   return (
-    // KHUNG GIỐNG FOOTER: max-w-7xl + px-4
-    <section className="mx-auto max-w-7xl px-4 py-4">
-      {/* Khung chiều cao cố định theo breakpoint */}
-      <div className="relative h-[220px] sm:h-[280px] lg:h-[360px]">
-        <Swiper
-          modules={[Autoplay, Navigation, Pagination, A11y, Keyboard]}
-          slidesPerView={1}
-          loop
-          speed={700}
-          keyboard={{ enabled: true }}
-          autoplay={{
-            delay: 3500,
-            disableOnInteraction: false,
-            pauseOnMouseEnter: true,
-          }}
-          pagination={{ clickable: true }}
-          navigation={{ prevEl: ".banner-prev", nextEl: ".banner-next" }}
-          className="h-full rounded-xl"
-        >
-          {BANNERS.map((b) => (
-            <SwiperSlide key={b.id} className="h-full">
-              <BannerImage src={b.url} alt={b.alt} />
-            </SwiperSlide>
-          ))}
-        </Swiper>
+    <section className="mx-auto mt-[10px] max-w-[1170px] py-3">
+  <div className="relative h-[464.5px]">
+    <Swiper
+      modules={[Autoplay, Navigation, Pagination, A11y, Keyboard]}
+      slidesPerView={1}
+      loop
+      speed={700}
+      keyboard={{ enabled: true }}
+      autoplay={{
+        delay: 3500,
+        disableOnInteraction: false,
+        pauseOnMouseEnter: true,
+      }}
+      pagination={{ clickable: true }}
+      navigation={{ prevEl: ".banner-prev", nextEl: ".banner-next" }}
+      className="h-full rounded-xl"
+    >
+      {BANNERS.map((b) => (
+        <SwiperSlide key={b.id} className="h-full">
+          <BannerImage src={b.url} alt={b.alt} />
+        </SwiperSlide>
+      ))}
+    </Swiper>
 
-        {/* arrows */}
-        <button
-          className="banner-prev absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/40 p-2 text-white backdrop-blur hover:bg-black/60"
-          aria-label="Banner trước"
-        >
-          ‹
-        </button>
-        <button
-          className="banner-next absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/40 p-2 text-white backdrop-blur hover:bg-black/60"
-          aria-label="Banner sau"
-        >
-          ›
-        </button>
-      </div>
-    </section>
+    {/* arrows */}
+    <button
+      className="banner-prev absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/40 p-2 text-white backdrop-blur hover:bg-black/60"
+      aria-label="Banner trước"
+    >
+      ‹
+    </button>
+    <button
+      className="banner-next absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/40 p-2 text-white backdrop-blur hover:bg-black/60"
+      aria-label="Banner sau"
+    >
+      ›
+    </button>
+  </div>
+</section>
   );
 }
 
