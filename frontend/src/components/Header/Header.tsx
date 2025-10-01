@@ -21,7 +21,7 @@ const NAV_ITEMS: NavItem[] = [
   {
     label: "HÀNG MỚI",
     href: "/hang-moi",
-    badge: <span className="ml-1 text-red-500 text-xs font-semibold">New</span>,
+    // badge: <span className="ml-1 text-red-500 text-xs font-semibold">New</span>,
   },
   {
     label: "SẢN PHẨM",
@@ -54,9 +54,9 @@ const NAV_ITEMS: NavItem[] = [
   {
     label: "OUTLET",
     href: "/outlet",
-    badge: (
-      <span className="ml-1 text-red-500 text-xs font-semibold">-50%</span>
-    ),
+    // badge: (
+    //   <span className="ml-1 text-red-500 text-xs font-semibold">-50%</span>
+    // ),
   },
   { label: "DISNEY", href: "/disney" },
   { label: "JEANS", href: "/jeans" },
@@ -172,8 +172,8 @@ export default function Header() {
 
       {/* Primary nav (white bar) */}
       <div className="border-b border-neutral-200 bg-white">
-        <div className="mx-auto hidden max-w-7xl items-center px-4 md:flex">
-          <ul className="flex w-full items-center gap-2 overflow-x-auto py-3 text-sm font-semibold">
+       <div className="mx-auto hidden items-center px-4 md:flex justify-center">
+  <ul className="flex items-center gap-2 py-3 text-sm font-bold">
             {primaryNav.map((item) => (
               <li key={item.label} className="shrink-0">
                 <a
