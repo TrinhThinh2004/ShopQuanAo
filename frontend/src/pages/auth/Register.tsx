@@ -1,250 +1,167 @@
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import {
-  User,
-  Mail,
-  Lock,
-  Eye,
-  EyeOff,
-  Loader2,
-  CheckSquare,
-} from "lucide-react";
+// src/pages/PolygonsRegister.tsx
+import CanvasPolygons from "./_Components/CanvasPolygons";
+// import { useState } from "react";
 
-export default function Register() {
-  const navigate = useNavigate();
-
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
-  const [agree, setAgree] = useState(false);
-
-  const [showPw, setShowPw] = useState(false);
-  const [showPw2, setShowPw2] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  const [errors, setErrors] = useState<{
-    fullName?: string;
-    email?: string;
-    password?: string;
-    confirm?: string;
-    agree?: string;
-  }>({});
-
-  function validate() {
-    const next: typeof errors = {};
-    if (!fullName.trim()) next.fullName = "Vui lòng nhập họ và tên";
-    if (!email.trim()) next.email = "Vui lòng nhập email";
-    else if (!/^\S+@\S+\.\S+$/.test(email)) next.email = "Email không hợp lệ";
-
-    if (!password) next.password = "Vui lòng nhập mật khẩu";
-    else if (password.length < 6) next.password = "Tối thiểu 6 ký tự";
-
-    if (!confirm) next.confirm = "Vui lòng nhập lại mật khẩu";
-    else if (confirm !== password) next.confirm = "Mật khẩu không khớp";
-
-    if (!agree) next.agree = "Bạn cần đồng ý điều khoản";
-
-    setErrors(next);
-    return Object.keys(next).length === 0;
-  }
-
-  async function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!validate()) return;
-    setLoading(true);
-
-    // TODO: gọi API đăng ký thật tại đây
-    await new Promise((r) => setTimeout(r, 900));
-
-    setLoading(false);
-    // eslint-disable-next-line no-alert
-    alert("Đăng ký thành công (mock)!");
-    navigate("/dang-nhap");
-  }
+export default function PolygonsRegister() {
+  // const [agree, setAgree] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-amber-50 via-white to-neutral-100">
-      <div className="mx-auto max-w-6xl px-4">
-        <div className="min-h-[80vh] flex items-center justify-center">
-          <div className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-black/10 mt-10">
-            <div className="border-b px-6 py-6">
-              <h1 className="text-center text-xl font-extrabold tracking-wide">
-                TẠO TÀI KHOẢN
-              </h1>
-              <p className="mt-1 text-center text-sm text-neutral-600">
-                Hoàn tất thông tin bên dưới để bắt đầu mua sắm.
-              </p>
+    <div className="relative min-h-svh w-full overflow-hidden bg-black text-cyan-100">
+      <CanvasPolygons />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,255,255,0.08),transparent_60%)]" />
+
+      {/* center cả dọc & ngang để cân đối viewport */}
+      <div className="relative z-10 grid min-h-svh place-items-center px-4">
+        <section className="w-[min(92svw,360px)] md:w-[min(70svw,420px)]">
+          <div className="rounded-2xl border border-cyan-500/30 bg-black/40 p-5 md:p-6 backdrop-blur-md shadow-[0_0_28px_rgba(0,255,255,0.22)]">
+            <h1 className="mb-1 text-center text-[clamp(1.1rem,3.4vw,1.4rem)] font-semibold text-white/90">
+              Create Account
+            </h1>
+            <p className="mb-4 text-center text-[clamp(.8rem,2.4vw,.9rem)] text-cyan-100/70">
+              Join the squad 🚀
+            </p>
+
+            {/* Username */}
+            <label className="mb-1 block text-[10px] uppercase tracking-widest text-cyan-100/70">
+              Username
+            </label>
+            <div className="relative mb-3.5">
+              <input
+                type="text"
+                autoComplete="username"
+                required
+                className="peer input-neon w-full rounded-md bg-transparent px-0 py-2
+                           text-[clamp(.9rem,2.6vw,.95rem)] text-cyan-50 placeholder:text-cyan-200/30
+                           caret-neon text-neon selection:bg-cyan-500/20"
+                placeholder=" "
+              />
+              <span className="uline-track uline-slim"></span>
+              <span className="uline-sweep uline-slim peer-focus:animate-uline"></span>
             </div>
 
-            <form onSubmit={onSubmit} className="space-y-4 px-6 py-6">
-              {/* Họ tên */}
-              <div>
-                <label className="mb-1 block text-xs font-semibold text-neutral-700">
-                  Họ và tên
-                </label>
-                <div className="relative">
-                  <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400">
-                    <User className="h-5 w-5" />
-                  </span>
-                  <input
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    placeholder="Nguyễn Văn A"
-                    className="h-11 w-full rounded-md border border-neutral-300 pl-10 pr-3 text-sm outline-none focus:border-black focus:ring-2 focus:ring-black/10"
-                    autoComplete="name"
-                    autoFocus
-                  />
-                </div>
-                {errors.fullName && (
-                  <p className="mt-1 text-xs text-red-600">{errors.fullName}</p>
-                )}
-              </div>
+            {/* Email */}
+            <label className="mb-1 block text-[10px] uppercase tracking-widest text-cyan-100/70">
+              Email
+            </label>
+            <div className="relative mb-3.5">
+              <input
+                type="email"
+                autoComplete="email"
+                required
+                className="peer input-neon w-full rounded-md bg-transparent px-0 py-2
+                           text-[clamp(.9rem,2.6vw,.95rem)] text-cyan-50 placeholder:text-cyan-200/30
+                           caret-neon text-neon selection:bg-cyan-500/20"
+                placeholder=" "
+              />
+              <span className="uline-track uline-slim"></span>
+              <span className="uline-sweep uline-slim peer-focus:animate-uline"></span>
+            </div>
 
-              {/* Email */}
-              <div>
-                <label className="mb-1 block text-xs font-semibold text-neutral-700">
-                  Email
-                </label>
-                <div className="relative">
-                  <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400">
-                    <Mail className="h-5 w-5" />
-                  </span>
-                  <input
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@example.com"
-                    className="h-11 w-full rounded-md border border-neutral-300 pl-10 pr-3 text-sm outline-none focus:border-black focus:ring-2 focus:ring-black/10"
-                    autoComplete="email"
-                  />
-                </div>
-                {errors.email && (
-                  <p className="mt-1 text-xs text-red-600">{errors.email}</p>
-                )}
-              </div>
+            {/* Phone number */}
+            <label className="mb-1 block text-[10px] uppercase tracking-widest text-cyan-100/70">
+              Phone number
+            </label>
+            <div className="relative mb-3.5">
+              <input
+                type="tel"
+                autoComplete="tel"
+                inputMode="tel"
+                pattern="^(\+?84|0)\d{8,10}$"
+                title="Use 0xxxxxxxxx or +84xxxxxxxxx"
+                maxLength={15}
+                required
+                className="peer input-neon w-full rounded-md bg-transparent px-0 py-2
+                           text-[clamp(.9rem,2.6vw,.95rem)] text-cyan-50 placeholder:text-cyan-200/30
+                           caret-neon text-neon selection:bg-cyan-500/20"
+                placeholder=" "
+              />
+              <span className="uline-track uline-slim"></span>
+              <span className="uline-sweep uline-slim peer-focus:animate-uline"></span>
+            </div>
 
-              {/* Mật khẩu */}
-              <div>
-                <label className="mb-1 block text-xs font-semibold text-neutral-700">
-                  Mật khẩu
-                </label>
-                <div className="relative">
-                  <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400">
-                    <Lock className="h-5 w-5" />
-                  </span>
-                  <input
-                    type={showPw ? "text" : "password"}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                    className="h-11 w-full rounded-md border border-neutral-300 pl-10 pr-11 text-sm outline-none focus:border-black focus:ring-2 focus:ring-black/10"
-                    autoComplete="new-password"
-                  />
-                  <button
-                    type="button"
-                    className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-2 text-neutral-500 hover:bg-neutral-100"
-                    onClick={() => setShowPw((v) => !v)}
-                    aria-label={showPw ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
-                  >
-                    {showPw ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
-                  </button>
-                </div>
-                {errors.password && (
-                  <p className="mt-1 text-xs text-red-600">{errors.password}</p>
-                )}
-              </div>
+            {/* Password */}
+            <label className="mb-1 block text-[10px] uppercase tracking-widest text-cyan-100/70">
+              Password
+            </label>
+            <div className="relative mb-3.5">
+              <input
+                type="password"
+                autoComplete="new-password"
+                required
+                minLength={6}
+                className="peer input-neon w-full rounded-md bg-transparent px-0 py-2
+                           text-[clamp(.9rem,2.6vw,.95rem)] text-cyan-50 placeholder:text-cyan-200/30
+                           caret-neon text-neon selection:bg-cyan-500/20"
+                placeholder=" "
+              />
+              <span className="uline-track uline-slim"></span>
+              <span className="uline-sweep uline-slim peer-focus:animate-uline"></span>
+            </div>
 
-              {/* Nhập lại mật khẩu */}
-              <div>
-                <label className="mb-1 block text-xs font-semibold text-neutral-700">
-                  Nhập lại mật khẩu
-                </label>
-                <div className="relative">
-                  <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400">
-                    <Lock className="h-5 w-5" />
-                  </span>
-                  <input
-                    type={showPw2 ? "text" : "password"}
-                    value={confirm}
-                    onChange={(e) => setConfirm(e.target.value)}
-                    placeholder="••••••••"
-                    className="h-11 w-full rounded-md border border-neutral-300 pl-10 pr-11 text-sm outline-none focus:border-black focus:ring-2 focus:ring-black/10"
-                    autoComplete="new-password"
-                  />
-                  <button
-                    type="button"
-                    className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-2 text-neutral-500 hover:bg-neutral-100"
-                    onClick={() => setShowPw2((v) => !v)}
-                    aria-label={showPw2 ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
-                  >
-                    {showPw2 ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
-                  </button>
-                </div>
-                {errors.confirm && (
-                  <p className="mt-1 text-xs text-red-600">{errors.confirm}</p>
-                )}
-              </div>
+            {/* Confirm Password */}
+            <label className="mb-1 block text-[10px] uppercase tracking-widest text-cyan-100/70">
+              Confirm password
+            </label>
+            <div className="relative mb-4">
+              <input
+                type="password"
+                autoComplete="new-password"
+                required
+                minLength={6}
+                className="peer input-neon w-full rounded-md bg-transparent px-0 py-2
+                           text-[clamp(.9rem,2.6vw,.95rem)] text-cyan-50 placeholder:text-cyan-200/30
+                           caret-neon text-neon selection:bg-cyan-500/20"
+                placeholder=" "
+              />
+              <span className="uline-track uline-slim"></span>
+              <span className="uline-sweep uline-slim peer-focus:animate-uline"></span>
+            </div>
 
-              {/* Agree */}
-              <label className="mt-1 flex cursor-pointer select-none items-center gap-2 text-sm text-neutral-700">
-                <input
-                  type="checkbox"
-                  className="size-4 accent-black"
-                  checked={agree}
-                  onChange={(e) => setAgree(e.target.checked)}
-                />
-                <span className="inline-flex items-center gap-1">
-                  <CheckSquare className="h-4 w-4 text-neutral-400" />
-                  Tôi đồng ý với{" "}
-                  <a
-                    className="font-semibold text-sky-600 hover:underline"
-                    href="#"
-                  >
-                    điều khoản & chính sách
-                  </a>
-                </span>
-              </label>
-              {errors.agree && (
-                <p className="mt-1 text-xs text-red-600">{errors.agree}</p>
-              )}
+            {/* Agree to Store Terms */}
+            <label className="mb-4 inline-flex select-none items-start gap-2 text-[clamp(.82rem,2.4vw,.9rem)] leading-6">
+              <input
+                type="checkbox"
+                className="mt-[2px] h-4 w-4 shrink-0 appearance-none rounded-[4px] border border-cyan-400/50 bg-transparent
+                           checked:bg-cyan-400 checked:shadow-[0_0_8px_rgba(0,255,255,0.8)]"
+                required
+              />
+              <span className="text-cyan-100/80">
+                I agree to the{" "}
+                <a className="text-cyan-300 hover:underline" href="/terms">
+                  Store Terms
+                </a>{" "}
+                and{" "}
+                <a className="text-cyan-300 hover:underline" href="/privacy">
+                  Privacy Policy
+                </a>
+                .
+              </span>
+            </label>
 
-              {/* Submit */}
-              <button
-                type="submit"
-                onClick={onSubmit}
-                disabled={loading}
-                className="mt-2 inline-flex h-11 w-full items-center justify-center gap-2 rounded-md bg-black font-semibold text-white transition hover:bg-black/90 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Đang tạo tài khoản...
-                  </>
-                ) : (
-                  "ĐĂNG KÝ"
-                )}
-              </button>
+            {/* CTA */}
+            <button
+              className="group relative w-full overflow-hidden rounded-xl border border-cyan-400/50
+                         bg-cyan-400/10 px-5 py-2.5 text-[clamp(.9rem,2.6vw,.95rem)] font-medium tracking-wide text-cyan-50
+                         shadow-[0_0_16px_rgba(0,255,255,0.22)] transition-colors hover:bg-cyan-400/20"
+            >
+              <span className="relative z-10">CREATE ACCOUNT</span>
+              <span
+                className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 -skew-x-12 bg-white/20 blur-sm
+                               transition-transform duration-500 group-hover:translate-x-[250%]"
+              />
+            </button>
 
-              <div className="pt-1 text-center text-sm">
-                Đã có tài khoản?{" "}
-                <Link
-                  to="/dang-nhap"
-                  className="font-semibold text-sky-600 hover:underline"
-                >
-                  Đăng nhập
-                </Link>
-              </div>
-            </form>
+            <p className="mt-4 text-center text-[clamp(.82rem,2.4vw,.9rem)] text-cyan-100/70">
+              Already have an account?{" "}
+              <a className="text-cyan-300 hover:underline" href="/dang-nhap">
+                Sign in
+              </a>
+            </p>
           </div>
-        </div>
+
+          {/* outer glow nhỏ lại */}
+          <div className="pointer-events-none absolute inset-0 -z-10 rounded-2xl blur-xl [box-shadow:0_0_80px_14px_rgba(0,255,255,0.13)]" />
+        </section>
       </div>
     </div>
   );

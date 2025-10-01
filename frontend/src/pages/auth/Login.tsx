@@ -1,165 +1,189 @@
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { Mail, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
+import { useEffect, useRef } from "react";
+type Node = { x: number; y: number; vx: number; vy: number };
 
 export default function Login() {
-  const navigate = useNavigate();
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const rafRef = useRef<number | null>(null);
+  const nodesRef = useRef<Node[]>([]); // ✅ thay cho useState
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPw, setShowPw] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>(
-    {}
-  );
+  useEffect(() => {
+    const canvas = canvasRef.current!;
+    const ctx = canvas.getContext("2d")!;
+    let w = (canvas.width = canvas.offsetWidth);
+    let h = (canvas.height = canvas.offsetHeight);
 
-  function validate() {
-    const next: typeof errors = {};
-    if (!email.trim()) next.email = "Vui lòng nhập email hoặc số điện thoại";
-    if (!password) next.password = "Vui lòng nhập mật khẩu";
-    setErrors(next);
-    return Object.keys(next).length === 0;
-  }
+    const DPI = window.devicePixelRatio || 1;
+    canvas.width = w * DPI;
+    canvas.height = h * DPI;
+    ctx.scale(DPI, DPI);
 
-  async function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!validate()) return;
-    setLoading(true);
+    const N = Math.round((w * h) / 12000);
+    const speed = 0.4;
+    const rnd = (min: number, max: number) => Math.random() * (max - min) + min;
 
-    // TODO: gọi API thực tế ở đây
-    await new Promise((r) => setTimeout(r, 900));
+    // khởi tạo nodes vào ref, KHÔNG dùng setState
+    nodesRef.current = Array.from({ length: N }, () => ({
+      x: rnd(0, w),
+      y: rnd(0, h),
+      vx: rnd(-speed, speed),
+      vy: rnd(-speed, speed),
+    }));
 
-    setLoading(false);
-    // eslint-disable-next-line no-alert
-    alert("Đăng nhập thành công (mock)!");
-    navigate("/");
-  }
+    const draw = () => {
+      ctx.clearRect(0, 0, w, h);
 
+      ctx.fillStyle = "rgba(0, 255, 255, 0.8)";
+      ctx.shadowColor = "rgba(0, 255, 255, 0.6)";
+      ctx.shadowBlur = 8;
+      const maxDist = Math.min(w, h) * 0.15;
+
+      // dùng nodesRef.current
+      const nodes = nodesRef.current;
+
+      for (const n of nodes) {
+        n.x += n.vx;
+        n.y += n.vy;
+        if (n.x < 0 || n.x > w) n.vx *= -1;
+        if (n.y < 0 || n.y > h) n.vy *= -1;
+
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, 1.6, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const a = nodes[i],
+            b = nodes[j];
+          const d = Math.hypot(a.x - b.x, a.y - b.y);
+          if (d < maxDist) {
+            const alpha = 1 - d / maxDist;
+            ctx.strokeStyle = `rgba(0,255,255,${0.25 * alpha})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      rafRef.current = requestAnimationFrame(draw);
+    };
+
+    draw();
+
+    const onResize = () => {
+      w = canvas.offsetWidth;
+      h = canvas.offsetHeight;
+      const dpi = window.devicePixelRatio || 1;
+      canvas.width = w * dpi;
+      canvas.height = h * dpi;
+      ctx.setTransform(dpi, 0, 0, dpi, 0, 0);
+    };
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      window.removeEventListener("resize", onResize);
+    };
+  }, []);
+
+  // ... phần JSX giữ nguyên
   return (
-    <div className="min-h-screen bg-gradient-to-b from-amber-50 via-white to-neutral-100">
-      {/* Nếu Header của bạn là fixed, có thể thêm pt-28 để tránh đè: */}
-      {/* <div className="pt-28"> */}
-      <div className="mx-auto max-w-6xl px-4">
-        {/* Center wrapper */}
-        <div className="min-h-[80vh] flex items-center justify-center">
-          {/* Card */}
-          <div className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-black/10">
-            {/* Header */}
-            <div className="border-b px-6 py-6">
-              <h1 className="text-center text-xl font-extrabold tracking-wide">
-                ĐĂNG NHẬP TÀI KHOẢN
-              </h1>
-              <p className="mt-1 text-center text-sm text-neutral-600">
-                Nhập email/điện thoại và mật khẩu của bạn:
-              </p>
-            </div>
+    <div className="relative min-h-screen w-full overflow-hidden bg-black text-cyan-100">
+      {/* moving polygon background */}
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 h-full w-full"
+        aria-hidden
+      />
 
-            {/* Form */}
-            <form onSubmit={onSubmit} className="space-y-4 px-6 py-6">
-              {/* Email */}
-              <div>
-                <label className="mb-1 block text-xs font-semibold text-neutral-700">
-                  Email hoặc số điện thoại
-                </label>
-                <div className="relative">
-                  <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400">
-                    <Mail className="h-5 w-5" />
-                  </span>
-                  <input
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Nhập email hoặc số điện thoại"
-                    className="h-11 w-full rounded-md border border-neutral-300 pl-10 pr-3 text-sm outline-none focus:border-black focus:ring-2 focus:ring-black/10"
-                    autoComplete="username"
-                    disabled={loading}
-                    autoFocus
-                    aria-label="Email hoặc số điện thoại"
-                  />
-                </div>
-                {errors.email && (
-                  <p className="mt-1 text-xs text-red-600">{errors.email}</p>
-                )}
-              </div>
+      {/* subtle vignette */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,255,255,0.08),transparent_60%)]" />
 
-              {/* Password */}
-              <div>
-                <label className="mb-1 block text-xs font-semibold text-neutral-700">
-                  Mật khẩu
-                </label>
-                <div className="relative">
-                  <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400">
-                    <Lock className="h-5 w-5" />
-                  </span>
-                  <input
-                    type={showPw ? "text" : "password"}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                    className="h-11 w-full rounded-md border border-neutral-300 pl-10 pr-11 text-sm outline-none focus:border-black focus:ring-2 focus:ring-black/10"
-                    autoComplete="current-password"
-                    disabled={loading}
-                    aria-label="Mật khẩu"
-                  />
-                  <button
-                    type="button"
-                    className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-2 text-neutral-500 hover:bg-neutral-100"
-                    onClick={() => setShowPw((v) => !v)}
-                    aria-label={showPw ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
-                    disabled={loading}
-                  >
-                    {showPw ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
-                  </button>
-                </div>
-                {errors.password && (
-                  <p className="mt-1 text-xs text-red-600">{errors.password}</p>
-                )}
-              </div>
+      {/* title */}
+      <div className="relative z-10 flex justify-center pt-10">
+        <h1 className="select-none text-3xl font-semibold tracking-wide text-white/90">
+          Login Store
+        </h1>
+      </div>
 
-              {/* Submit */}
-              <button
-                type="submit"
-                disabled={loading}
-                className="mt-2 inline-flex h-11 w-full items-center justify-center gap-2 rounded-md bg-black font-semibold text-white transition hover:bg-black/90 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Đang đăng nhập...
-                  </>
-                ) : (
-                  "ĐĂNG NHẬP"
-                )}
-              </button>
+      {/* card */}
+      <div className="relative z-10 mx-auto mt-10 w-[90%] max-w-[420px]">
+        <div className="rounded-3xl border border-cyan-500/30 bg-black/40 p-8 backdrop-blur-md shadow-[0_0_40px_rgba(0,255,255,0.25)]">
+          <h2 className="mb-1 text-center text-cyan-300 tracking-[0.2em]">
+            LOGIN
+          </h2>
+          <p className="mb-6 text-center text-sm text-cyan-100/70">
+            Welcome Back
+          </p>
 
-              {/* Links */}
-              <div className="pt-1 text-center text-sm">
-                <div>
-                  Khách hàng mới?{" "}
-                  <Link
-                    to="/dang-ky"
-                    className="font-semibold text-sky-600 hover:underline"
-                  >
-                    Tạo tài khoản
-                  </Link>
-                </div>
-                <div className="mt-1">
-                  Quên mật khẩu?{" "}
-                  <Link
-                    to="/quen-mat-khau"
-                    className="font-semibold text-sky-600 hover:underline"
-                  >
-                    Khôi phục mật khẩu
-                  </Link>
-                </div>
-              </div>
-            </form>
+          {/* Username */}
+          <label className="mb-1 block text-xs uppercase tracking-widest text-cyan-100/70">
+            Username
+          </label>
+          <div className="relative mb-5">
+            <input
+              type="text"
+              className="peer input-neon w-full rounded-md bg-transparent px-0 py-2
+               text-cyan-50 placeholder:text-cyan-200/30 caret-neon text-neon
+               selection:bg-cyan-500/20"
+              placeholder=" "
+            />
+            <span className="uline-track"></span>
+            {/* chạy khi focus */}
+            <span className="uline-sweep peer-focus:animate-uline"></span>
           </div>
+
+          {/* Password */}
+          <label className="mb-1 block text-xs uppercase tracking-widest text-cyan-100/70">
+            Password
+          </label>
+          <div className="relative mb-4">
+            <input
+              type="password"
+              className="peer input-neon w-full rounded-md bg-transparent px-0 py-2
+               text-cyan-50 placeholder:text-cyan-200/30 caret-neon text-neon
+               selection:bg-cyan-500/20"
+              placeholder=" "
+            />
+            <span className="uline-track"></span>
+            <span className="uline-sweep peer-focus:animate-uline"></span>
+          </div>
+
+          {/* options */}
+          <div className="mb-6 flex items-center justify-between text-sm">
+            <label className="inline-flex select-none items-center gap-2">
+              <input
+                type="checkbox"
+                className="h-4 w-4 appearance-none rounded-[4px] border border-cyan-400/50 bg-transparent checked:bg-cyan-400 checked:shadow-[0_0_10px_rgba(0,255,255,0.8)]"
+              />
+              <span className="text-cyan-100/80">Remember me</span>
+            </label>
+            <button className="text-cyan-300/80 underline-offset-4 hover:text-cyan-200 hover:underline">
+              Forgot Password?
+            </button>
+          </div>
+
+          {/* button */}
+          <button className="group relative w-full overflow-hidden rounded-xl border border-cyan-400/50 bg-cyan-400/10 px-6 py-3 font-medium tracking-wide text-cyan-50 shadow-[0_0_20px_rgba(0,255,255,0.25)] transition-colors hover:bg-cyan-400/20">
+            <span className="relative z-10">SIGN IN</span>
+            {/* sweep light */}
+            <span className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 -skew-x-12 bg-white/20 blur-sm transition-transform duration-500 group-hover:translate-x-[250%]" />
+          </button>
+
+          {/* footer */}
+          <p className="mt-6 text-center text-sm text-cyan-100/70">
+            Don’t have an account?{" "}
+            <a className="text-cyan-300 hover:underline" href="/dang-ky">
+              Register
+            </a>
+          </p>
         </div>
-        {/* </div> */}
+
+        {/* glowing frame */}
+        <div className="pointer-events-none absolute inset-0 -z-10 rounded-3xl blur-2xl [box-shadow:0_0_120px_20px_rgba(0,255,255,0.15)]" />
       </div>
     </div>
   );

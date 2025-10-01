@@ -1,1 +1,65 @@
 @import "tailwindcss";
+
+//login
+/* --- Neon text & caret --- */
+.text-neon {
+  text-shadow: 0 0 6px rgba(34, 211, 238, 0.65),
+    0 0 18px rgba(34, 211, 238, 0.35), 0 0 28px rgba(34, 211, 238, 0.25);
+}
+.caret-neon {
+  caret-color: #22d3ee;
+} /* cyan-400 */
+
+/* --- Underline track mờ luôn hiển thị --- */
+.uline-track {
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  height: 2px;
+  width: 100%;
+  border-radius: 9999px;
+  background: rgba(34, 211, 238, 0.18);
+  filter: drop-shadow(0 0 8px rgba(34, 211, 238, 0.35));
+}
+
+/* --- Thanh sáng sweep chạy từ trái -> phải --- */
+.uline-sweep {
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  height: 2px;
+  width: 0; /* sẽ animate tới 100% */
+  border-radius: 9999px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(34, 211, 238, 0.95),
+    transparent
+  );
+  box-shadow: 0 0 8px rgba(34, 211, 238, 0.9), 0 0 18px rgba(34, 211, 238, 0.55);
+  transform-origin: left;
+}
+
+/* keyframes & trigger class */
+@keyframes underlineSweep {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+.animate-uline {
+  animation: underlineSweep 0.55s ease forwards;
+}
+
+/* --- Viền input phát sáng nhẹ khi focus --- */
+.input-neon:focus {
+  box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.35),
+    inset 0 0 22px rgba(34, 211, 238, 0.35);
+  outline: none;
+}
+/* Underline mảnh hơn */
+.uline-slim {
+  height: 1.5px;
+}
