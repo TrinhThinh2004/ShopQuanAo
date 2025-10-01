@@ -11,7 +11,7 @@ const sequelize = new Sequelize({
   database: process.env.DB_NAME || 'shop_quan_ao',
   username: process.env.DB_USER || 'root',
   password: process.env.DB_PASSWORD || '',
-  logging: console.log, 
+  logging: false, 
   pool: {
     max: 5,
     min: 0,
