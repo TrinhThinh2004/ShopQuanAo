@@ -1,9 +1,32 @@
 // src/pages/PolygonsRegister.tsx
+import { useState } from "react";
 import CanvasPolygons from "./_Components/CanvasPolygons";
-// import { useState } from "react";
+import { SignUpUser } from "../../api/auth";
+import { toast } from "react-toastify";
 
 export default function PolygonsRegister() {
-  // const [agree, setAgree] = useState(false);
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!username || !email || !password) return toast.error("Nhập đủ thông tin");
+    if (password !== confirm) return toast.error("Mật khẩu nhập lại không khớp");
+    try {
+      setLoading(true);
+      await SignUpUser({ username, email, password, phone_number: phone || undefined });
+      toast.success("Đăng ký thành công. Vui lòng đăng nhập");
+      // TODO: điều hướng sang /dang-nhap
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || "Đăng ký thất bại");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="relative min-h-svh w-full overflow-hidden bg-black text-cyan-100">
@@ -21,135 +44,136 @@ export default function PolygonsRegister() {
               Join the squad 🚀
             </p>
 
-            {/* Username */}
-            <label className="mb-1 block text-[10px] uppercase tracking-widest text-cyan-100/70">
-              Username
-            </label>
-            <div className="relative mb-3.5">
-              <input
-                type="text"
-                autoComplete="username"
-                required
-                className="peer input-neon w-full rounded-md bg-transparent px-0 py-2
+            <form onSubmit={handleSubmit}>
+              {/* Username */}
+              <label className="mb-1 block text-[10px] uppercase tracking-widest text-cyan-100/70">
+                Username
+              </label>
+              <div className="relative mb-3.5">
+                <input
+                  type="text"
+                  autoComplete="username"
+                  required
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="peer input-neon w-full rounded-md bg-transparent px-0 py-2
                            text-[clamp(.9rem,2.6vw,.95rem)] text-cyan-50 placeholder:text-cyan-200/30
                            caret-neon text-neon selection:bg-cyan-500/20"
-                placeholder=" "
-              />
-              <span className="uline-track uline-slim"></span>
-              <span className="uline-sweep uline-slim peer-focus:animate-uline"></span>
-            </div>
+                  placeholder=" "
+                />
+                <span className="uline-track uline-slim"></span>
+                <span className="uline-sweep uline-slim peer-focus:animate-uline"></span>
+              </div>
 
-            {/* Email */}
-            <label className="mb-1 block text-[10px] uppercase tracking-widest text-cyan-100/70">
-              Email
-            </label>
-            <div className="relative mb-3.5">
-              <input
-                type="email"
-                autoComplete="email"
-                required
-                className="peer input-neon w-full rounded-md bg-transparent px-0 py-2
+              {/* Email */}
+              <label className="mb-1 block text-[10px] uppercase tracking-widest text-cyan-100/70">
+                Email
+              </label>
+              <div className="relative mb-3.5">
+                <input
+                  type="email"
+                  autoComplete="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="peer input-neon w-full rounded-md bg-transparent px-0 py-2
                            text-[clamp(.9rem,2.6vw,.95rem)] text-cyan-50 placeholder:text-cyan-200/30
                            caret-neon text-neon selection:bg-cyan-500/20"
-                placeholder=" "
-              />
-              <span className="uline-track uline-slim"></span>
-              <span className="uline-sweep uline-slim peer-focus:animate-uline"></span>
-            </div>
+                  placeholder=" "
+                />
+                <span className="uline-track uline-slim"></span>
+                <span className="uline-sweep uline-slim peer-focus:animate-uline"></span>
+              </div>
 
-            {/* Phone number */}
-            <label className="mb-1 block text-[10px] uppercase tracking-widest text-cyan-100/70">
-              Phone number
-            </label>
-            <div className="relative mb-3.5">
-              <input
-                type="tel"
-                autoComplete="tel"
-                inputMode="tel"
-                pattern="^(\+?84|0)\d{8,10}$"
-                title="Use 0xxxxxxxxx or +84xxxxxxxxx"
-                maxLength={15}
-                required
-                className="peer input-neon w-full rounded-md bg-transparent px-0 py-2
+              {/* Phone number */}
+              <label className="mb-1 block text-[10px] uppercase tracking-widest text-cyan-100/70">
+                Phone number
+              </label>
+              <div className="relative mb-3.5">
+                <input
+                  type="tel"
+                  autoComplete="tel"
+                  inputMode="tel"
+                  pattern="^(\+?84|0)\d{8,10}$"
+                  title="Use 0xxxxxxxxx or +84xxxxxxxxx"
+                  maxLength={15}
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="peer input-neon w-full rounded-md bg-transparent px-0 py-2
                            text-[clamp(.9rem,2.6vw,.95rem)] text-cyan-50 placeholder:text-cyan-200/30
                            caret-neon text-neon selection:bg-cyan-500/20"
-                placeholder=" "
-              />
-              <span className="uline-track uline-slim"></span>
-              <span className="uline-sweep uline-slim peer-focus:animate-uline"></span>
-            </div>
+                  placeholder=" "
+                />
+                <span className="uline-track uline-slim"></span>
+                <span className="uline-sweep uline-slim peer-focus:animate-uline"></span>
+              </div>
 
-            {/* Password */}
-            <label className="mb-1 block text-[10px] uppercase tracking-widest text-cyan-100/70">
-              Password
-            </label>
-            <div className="relative mb-3.5">
-              <input
-                type="password"
-                autoComplete="new-password"
-                required
-                minLength={6}
-                className="peer input-neon w-full rounded-md bg-transparent px-0 py-2
+              {/* Password */}
+              <label className="mb-1 block text-[10px] uppercase tracking-widest text-cyan-100/70">
+                Password
+              </label>
+              <div className="relative mb-3.5">
+                <input
+                  type="password"
+                  autoComplete="new-password"
+                  required
+                  minLength={6}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="peer input-neon w-full rounded-md bg-transparent px-0 py-2
                            text-[clamp(.9rem,2.6vw,.95rem)] text-cyan-50 placeholder:text-cyan-200/30
                            caret-neon text-neon selection:bg-cyan-500/20"
-                placeholder=" "
-              />
-              <span className="uline-track uline-slim"></span>
-              <span className="uline-sweep uline-slim peer-focus:animate-uline"></span>
-            </div>
+                  placeholder=" "
+                />
+                <span className="uline-track uline-slim"></span>
+                <span className="uline-sweep uline-slim peer-focus:animate-uline"></span>
+              </div>
 
-            {/* Confirm Password */}
-            <label className="mb-1 block text-[10px] uppercase tracking-widest text-cyan-100/70">
-              Confirm password
-            </label>
-            <div className="relative mb-4">
-              <input
-                type="password"
-                autoComplete="new-password"
-                required
-                minLength={6}
-                className="peer input-neon w-full rounded-md bg-transparent px-0 py-2
+              {/* Confirm Password */}
+              <label className="mb-1 block text-[10px] uppercase tracking-widest text-cyan-100/70">
+                Confirm password
+              </label>
+              <div className="relative mb-4">
+                <input
+                  type="password"
+                  autoComplete="new-password"
+                  required
+                  minLength={6}
+                  value={confirm}
+                  onChange={(e) => setConfirm(e.target.value)}
+                  className="peer input-neon w-full rounded-md bg-transparent px-0 py-2
                            text-[clamp(.9rem,2.6vw,.95rem)] text-cyan-50 placeholder:text-cyan-200/30
                            caret-neon text-neon selection:bg-cyan-500/20"
-                placeholder=" "
-              />
-              <span className="uline-track uline-slim"></span>
-              <span className="uline-sweep uline-slim peer-focus:animate-uline"></span>
-            </div>
+                  placeholder=" "
+                />
+                <span className="uline-track uline-slim"></span>
+                <span className="uline-sweep uline-slim peer-focus:animate-uline"></span>
+              </div>
 
-            {/* Agree to Store Terms */}
-            <label className="mb-4 inline-flex select-none items-start gap-2 text-[clamp(.82rem,2.4vw,.9rem)] leading-6">
-              <input
-                type="checkbox"
-                className="mt-[2px] h-4 w-4 shrink-0 appearance-none rounded-[4px] border border-cyan-400/50 bg-transparent
-                           checked:bg-cyan-400 checked:shadow-[0_0_8px_rgba(0,255,255,0.8)]"
-                required
-              />
-              <span className="text-cyan-100/80">
-                I agree to the{" "}
-                <a className="text-cyan-300 hover:underline" href="/terms">
-                  Store Terms
-                </a>{" "}
-                and{" "}
-                <a className="text-cyan-300 hover:underline" href="/privacy">
-                  Privacy Policy
-                </a>
-                .
-              </span>
-            </label>
+              <label className="mb-4 inline-flex select-none items-start gap-2 text-[clamp(.82rem,2.4vw,.9rem)] leading-6">
+                <input
+                  type="checkbox"
+                  className="mt-[2px] h-4 w-4 shrink-0 appearance-none rounded-[4px] border border-cyan-400/50 bg-transparent checked:bg-cyan-400 checked:shadow-[0_0_8px_rgba(0,255,255,0.8)]"
+                  required
+                />
+                <span className="text-cyan-100/80">
+                  I agree to the {" "}
+                  <a className="text-cyan-300 hover:underline" href="/terms">
+                    Store Terms
+                  </a>{" "}
+                  and {" "}
+                  <a className="text-cyan-300 hover:underline" href="/privacy">
+                    Privacy Policy
+                  </a>
+                  .
+                </span>
+              </label>
 
-            {/* CTA */}
-            <button
-              className="group relative w-full overflow-hidden rounded-xl border border-cyan-400/50
-                         bg-cyan-400/10 px-5 py-2.5 text-[clamp(.9rem,2.6vw,.95rem)] font-medium tracking-wide text-cyan-50
-                         shadow-[0_0_16px_rgba(0,255,255,0.22)] transition-colors hover:bg-cyan-400/20"
-            >
-              <span className="relative z-10">CREATE ACCOUNT</span>
-              <span
-                className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 -skew-x-12 bg-white/20 blur-sm
-                               transition-transform duration-500 group-hover:translate-x-[250%]"
-              />
-            </button>
+              <button type="submit" disabled={loading} className="group relative w-full overflow-hidden rounded-xl border border-cyan-400/50 bg-cyan-400/10 px-5 py-2.5 text-[clamp(.9rem,2.6vw,.95rem)] font-medium tracking-wide text-cyan-50 shadow-[0_0_16px_rgba(0,255,255,0.22)] transition-colors hover:bg-cyan-400/20 disabled:opacity-60">
+                <span className="relative z-10">{loading ? "CREATING..." : "CREATE ACCOUNT"}</span>
+                <span className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 -skew-x-12 bg-white/20 blur-sm transition-transform duration-500 group-hover:translate-x-[250%]" />
+              </button>
+            </form>
 
             <p className="mt-4 text-center text-[clamp(.82rem,2.4vw,.9rem)] text-cyan-100/70">
               Already have an account?{" "}
@@ -159,7 +183,6 @@ export default function PolygonsRegister() {
             </p>
           </div>
 
-          {/* outer glow nhỏ lại */}
           <div className="pointer-events-none absolute inset-0 -z-10 rounded-2xl blur-xl [box-shadow:0_0_80px_14px_rgba(0,255,255,0.13)]" />
         </section>
       </div>

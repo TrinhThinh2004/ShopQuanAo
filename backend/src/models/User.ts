@@ -6,7 +6,6 @@ export interface UserAttributes {
   username: string;
   email: string;
   password_hash: string;
-  name?: string | null;
   phone_number?: string | null;
   role: 'admin' | 'user';
   created_at?: Date;
@@ -15,7 +14,7 @@ export interface UserAttributes {
 
 export type UserCreationAttributes = Optional<
   UserAttributes,
-  'user_id' | 'name' | 'phone_number' | 'created_at' | 'updated_at'
+  'user_id' | 'phone_number' | 'created_at' | 'updated_at'
 >;
 
 export class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
@@ -23,7 +22,6 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   public username!: string;
   public email!: string;
   public password_hash!: string;
-  public name!: string | null;
   public phone_number!: string | null;
   public role!: 'admin' | 'user';
   public created_at!: Date;
@@ -75,10 +73,6 @@ User.init(
       validate: {
         notEmpty: true,
       },
-    },
-    name: {
-      type: DataTypes.STRING(100),
-      allowNull: true,
     },
     phone_number: {
       type: DataTypes.STRING(20),

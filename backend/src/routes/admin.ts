@@ -16,11 +16,11 @@ router.get('/dashboard', authenticateToken, requireAdmin, (req, res) => {
 });
 
 // Lấy danh sách tất cả users
-router.get('/get-all-users', authenticateToken, requireAdmin, async (req, res) => {
+router.get('/users', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const User = require('../models/User').default;
     const users = await User.findAll({
-      attributes: ['user_id', 'username', 'email', 'name', 'role', 'created_at'],
+      attributes: ['user_id', 'username', 'email', 'phone_number', 'role', 'created_at'],
       order: [['created_at', 'DESC']],
     });
 

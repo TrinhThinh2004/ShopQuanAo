@@ -15,11 +15,11 @@ const generateToken = (user: User): string => {
 
   const secret = process.env.JWT_SECRET;
   if (!secret) {
-    throw new Error('JWT_SECRET is not defined in environment variables');
+    throw new Error('Thiếu cấu hình JWT_SECRET trong biến môi trường');
   }
 
   return jwt.sign(payload, secret, {
-    expiresIn: '7d', 
+    expiresIn: '7d',
   });
 };
 
@@ -30,33 +30,29 @@ export const login = async (req: Request, res: Response) => {
 
     if (!email || !password) {
       return res.status(400).json({ 
-        message: 'Email and password are required' 
+        message: 'Vui lòng nhập email và mật khẩu' 
       });
     }
 
-    // Tìm user theo email
     const user = await User.findOne({ where: { email } });
     if (!user) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+      return res.status(401).json({ message: 'Thông tin đăng nhập không đúng' });
     }
 
-    // Kiểm tra password
     const isValidPassword = await bcrypt.compare(password, user.password_hash);
     if (!isValidPassword) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+      return res.status(401).json({ message: 'Thông tin đăng nhập không đúng' });
     }
 
-    // Tạo token
     const token = generateToken(user);
 
     return res.json({
-      message: 'Login successful',
+      message: 'Đăng nhập thành công',
       token,
       user: {
         user_id: user.user_id,
         username: user.username,
         email: user.email,
-        name: user.name,
         role: user.role,
       },
     });
@@ -68,49 +64,43 @@ export const login = async (req: Request, res: Response) => {
 // Đăng ký (chỉ tạo user role)
 export const register = async (req: Request, res: Response) => {
   try {
-    const { username, email, password, name, phone_number } = req.body;
+    const { username, email, password, phone_number } = req.body;
 
     if (!username || !email || !password) {
       return res.status(400).json({ 
-        message: 'Username, email and password are required' 
+        message: 'Vui lòng nhập username, email và mật khẩu' 
       });
     }
 
-    // Kiểm tra user đã tồn tại
     const existingUserByEmail = await User.findOne({ where: { email } });
     const existingUserByUsername = await User.findOne({ where: { username } });
     
     if (existingUserByEmail || existingUserByUsername) {
       return res.status(409).json({ 
-        message: 'Username or email already exists' 
+        message: 'Username hoặc email đã tồn tại' 
       });
     }
 
-    // Hash password
     const saltRounds = 10;
     const password_hash = await bcrypt.hash(password, saltRounds);
 
-    // Tạo user mới (luôn là role 'user')
     const newUser = await User.create({
       username,
       email,
       password_hash,
-      name,
       phone_number,
-      role: 'user', // Chỉ tạo user, không tạo admin
+      role: 'user',
     });
 
-    // Tạo token
     const token = generateToken(newUser);
 
     return res.status(201).json({
-      message: 'Registration successful',
+      message: 'Đăng ký thành công',
       token,
       user: {
         user_id: newUser.user_id,
         username: newUser.username,
         email: newUser.email,
-        name: newUser.name,
         role: newUser.role,
       },
     });
@@ -122,14 +112,13 @@ export const register = async (req: Request, res: Response) => {
 // Lấy profile user hiện tại
 export const getProfile = async (req: Request, res: Response) => {
   try {
-    const user = req.user!; // Đã được authenticate
+    const user = req.user!;
 
     return res.json({
       user: {
         user_id: user.user_id,
         username: user.username,
         email: user.email,
-        name: user.name,
         phone_number: user.phone_number,
         role: user.role,
         created_at: user.created_at,
@@ -144,20 +133,18 @@ export const getProfile = async (req: Request, res: Response) => {
 export const updateProfile = async (req: Request, res: Response) => {
   try {
     const user = req.user!;
-    const { name, phone_number } = req.body;
+    const { phone_number } = req.body;
 
     await user.update({
-      name: name || user.name,
       phone_number: phone_number || user.phone_number,
     });
 
     return res.json({
-      message: 'Profile updated successfully',
+      message: 'Cập nhật hồ sơ thành công',
       user: {
         user_id: user.user_id,
         username: user.username,
         email: user.email,
-        name: user.name,
         phone_number: user.phone_number,
         role: user.role,
       },
