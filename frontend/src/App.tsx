@@ -2,13 +2,16 @@
 import { BrowserRouter as Router } from "react-router-dom";
 import ScrollToTop from "./routes/ScrollToTop";
 import AppRoutes from "./routes/AppRoutes";
-
+import { ToastContainer, toast } from 'react-toastify';
 function App() {
   return (
-    <Router>
-      <ScrollToTop />
-      <AppRoutes />
-    </Router>
+    <>
+      <ToastContainer position="top-right" autoClose={2000} />
+      <Router>
+        <ScrollToTop />
+        <AppRoutes />
+      </Router>
+    </>
   );
 }
 
