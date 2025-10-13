@@ -25,9 +25,9 @@ const MOCK: Record<
   }
 > = {
   "1": {
-    id: "1",
+    product_id: 1,
     name: "Áo Thun Nam ICONDENIM Orgnls",
-    image:
+    image_url:
       "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1200&auto=format&fit=crop",
     images: [
       "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1200&auto=format&fit=crop",
@@ -36,7 +36,6 @@ const MOCK: Record<
       "https://images.unsplash.com/photo-1544441893-675973e31985?q=80&w=1200&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1503342452485-86ff0a0d98ab?q=80&w=1200&auto=format&fit=crop",
     ],
-
     sizes: ["S", "M", "L", "XL"],
     price: 299_000,
     isNew: true,
@@ -45,6 +44,9 @@ const MOCK: Record<
       "COTTON 220GSM – MỀM MẠI & THOÁNG KHÍ. In graphic ORGNLS tinh thần streetwear. Form regular gọn gàng dễ mặc.",
     sku: "ATID0640-01",
     category: "Áo Thun",
+    stock_quantity: 100,
+    created_at: "2025-10-13T00:00:00Z",
+    updated_at: "2025-10-13T00:00:00Z",
   },
 };
 type Review = {
@@ -109,16 +111,16 @@ function formatDateVN(iso: string): string {
 function addToCartLS(item: Product, qty: number, size?: string) {
   const raw = localStorage.getItem("cart");
   const cart: Array<{
-    id: string;
+    product_id: number;
     qty: number;
     item: Product;
     size?: string;
   }> = raw ? JSON.parse(raw) : [];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const keyMatch = (c: any) => c.id === item.id && c.size === size;
+  const keyMatch = (c: any) => c.product_id === item.product_id && c.size === size;
   const idx = cart.findIndex(keyMatch);
   if (idx >= 0) cart[idx].qty += qty;
-  else cart.push({ id: item.id, qty, item, size });
+  else cart.push({ product_id: item.product_id, qty, item, size });
   localStorage.setItem("cart", JSON.stringify(cart));
   // eslint-disable-next-line no-alert
   alert("Đã thêm vào giỏ!");
@@ -131,7 +133,7 @@ export default function ProductDetail() {
   const [activeIdx, setActiveIdx] = useState(0);
   const [size, setSize] = useState<string | undefined>(data.sizes[0]);
   const [qty, setQty] = useState(1);
-  const mainImg = data.images[activeIdx] ?? data.image;
+  const mainImg = data.images[activeIdx] ?? data.image_url;
 
   return (
     <div className="bg-gradient-to-b from-amber-50 to-amber-100">
