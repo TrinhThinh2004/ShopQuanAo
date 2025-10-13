@@ -14,3 +14,4 @@ export type Product = {
   category?: string; // <-- thêm (optional để không vỡ các chỗ cũ)
   tags?: string[]; // <-- tùy, nếu bạn lọc theo tag
 };
+  
