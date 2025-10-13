@@ -2,16 +2,16 @@ import { Link } from "react-router-dom";
 import type { Product } from "../../types/product";
 import { formatVnd } from "../../utils/format";
 import { ShoppingCart } from "lucide-react";
-
+const API_URL = import.meta.env.VITE_API_URL;
 function addToCart(item: Product) {
   try {
     const raw = localStorage.getItem("cart");
-    const cart: Array<{ id: string; qty: number; item: Product }> = raw
+    const cart: Array<{ id: number; qty: number; item: Product }> = raw
       ? JSON.parse(raw)
       : [];
-    const idx = cart.findIndex((c) => c.id === item.id);
+    const idx = cart.findIndex((c) => c.id === item.product_id);
     if (idx >= 0) cart[idx].qty += 1;
-    else cart.push({ id: item.id, qty: 1, item });
+    else cart.push({ id: item.product_id, qty: 1, item });
     localStorage.setItem("cart", JSON.stringify(cart));
     alert("Đã thêm vào giỏ hàng!");
   } catch {
@@ -31,7 +31,7 @@ export default function ProductCard({ item }: Props) {
       <div className="relative">
         <div className="overflow-hidden">
           <img
-            src={item.image}
+  src={`${API_URL}${item.image_url}`}
             alt={item.name}
             className="h-56 w-full object-cover transition-transform duration-300 sm:h-64 group-hover:scale-105"
             loading="lazy"
@@ -80,7 +80,7 @@ export default function ProductCard({ item }: Props) {
           </div>
 
           <Link
-            to={`/san-pham/${item.id}`}
+            to={`/san-pham/${item.product_id}`}
             onClick={(e) => e.stopPropagation()}
             className="rounded-md bg-black px-3 py-1.5 text-xs font-semibold text-white
              transition-colors hover:bg-sky-600 focus-visible:outline-none

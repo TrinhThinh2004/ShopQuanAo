@@ -32,7 +32,7 @@ export default function ProductGrid({
     <section className="mx-auto mt-6 w-full max-w-6xl px-1 sm:px-0">
       <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {pageItems.map((p) => (
-          <ProductCard key={p.id} item={p} />
+          <ProductCard key={p.product_id} item={p} />
         ))}
       </div>
 
