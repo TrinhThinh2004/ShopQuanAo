@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import path from "path";
 import { testConnection } from "./config/database";
 import productsRouter from "./routes/products";
 import authRouter from "./routes/auth";
@@ -12,6 +13,9 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+// Serve static files từ thư mục uploads
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 app.get("/", (req, res) => {
   res.send("Hello backend with CORS + TS + MySQL!");

@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-//login
+/* login */
 /* --- Neon text & caret --- */
 .text-neon {
   text-shadow: 0 0 6px rgba(34, 211, 238, 0.65),

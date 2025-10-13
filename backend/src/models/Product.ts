@@ -7,13 +7,14 @@ export interface ProductAttributes {
   description?: string | null;
   price: number;
   stock_quantity: number;
+  image_url?: string | null;
   category_id?: number | null;
   brand_id?: number | null;
   created_at?: Date;
   updated_at?: Date;
 }
 
-export type ProductCreationAttributes = Optional<ProductAttributes, 'product_id' | 'description' | 'category_id' | 'brand_id' | 'created_at' | 'updated_at'>;
+export type ProductCreationAttributes = Optional<ProductAttributes, 'product_id' | 'description' | 'image_url' | 'category_id' | 'brand_id' | 'created_at' | 'updated_at'>;
 
 export class Product extends Model<ProductAttributes, ProductCreationAttributes> implements ProductAttributes {
   public product_id!: number;
@@ -21,6 +22,7 @@ export class Product extends Model<ProductAttributes, ProductCreationAttributes>
   public description!: string | null;
   public price!: number;
   public stock_quantity!: number;
+  public image_url!: string | null;
   public category_id!: number | null;
   public brand_id!: number | null;
   public created_at!: Date;
@@ -49,6 +51,10 @@ Product.init(
     stock_quantity: {
       type: DataTypes.INTEGER,
       allowNull: false,
+    },
+    image_url: {
+      type: DataTypes.TEXT,
+      allowNull: true,
     },
     category_id: {
       type: DataTypes.INTEGER,
