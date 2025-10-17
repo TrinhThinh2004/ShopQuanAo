@@ -6,14 +6,15 @@ import {
 	updateProduct,
 	deleteProduct
 } from '../controllers/products.controller';
+import upload from '../middleware/upload.middleware';
 
 const router = Router();
 
 
 router.get('/get-all', getAllProducts);
 router.get('/:id', getProductById);
-router.post('/', createProduct);
-router.put('/:id', updateProduct);
+router.post('/', upload.single('image'), createProduct);
+router.put('/:id', upload.single('image'), updateProduct);
 router.delete('/:id', deleteProduct);
 
 

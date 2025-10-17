@@ -200,7 +200,7 @@ export default function ProductDetail() {
             </div>
 
             <div className="mt-3 text-2xl font-bold text-black">
-              {formatVnd(data.price)}
+              {formatVnd(Number(data.price))}
             </div>
 
             {/* Promo box */}

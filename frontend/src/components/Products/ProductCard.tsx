@@ -76,7 +76,7 @@ export default function ProductCard({ item }: Props) {
         {/* Price + CTA đẩy xuống đáy */}
         <div className="mt-auto flex items-center justify-between pt-2">
           <div className="text-[13px] font-semibold text-black">
-            {formatVnd(item.price)}
+            {formatVnd(Number(item.price))}
           </div>
 
           <Link
