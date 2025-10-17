@@ -29,6 +29,11 @@ module.exports = {
         type: Sequelize.TEXT,
         allowNull: true,
       },
+       active: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: true,
+      },
       category_id: {
         type: Sequelize.INTEGER,
         allowNull: true,

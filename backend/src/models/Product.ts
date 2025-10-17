@@ -8,6 +8,7 @@ export interface ProductAttributes {
   price: number;
   stock_quantity: number;
   image_url?: string | null;
+  active: boolean;
   category_id?: number | null;
   brand_id?: number | null;
   created_at?: Date;
@@ -23,6 +24,7 @@ export class Product extends Model<ProductAttributes, ProductCreationAttributes>
   public price!: number;
   public stock_quantity!: number;
   public image_url!: string | null;
+  public active!: boolean;
   public category_id!: number | null;
   public brand_id!: number | null;
   public created_at!: Date;
@@ -55,7 +57,11 @@ Product.init(
     image_url: {
       type: DataTypes.TEXT,
       allowNull: true,
-    },
+    },active: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true,
+    },
     category_id: {
       type: DataTypes.INTEGER,
       allowNull: true,
