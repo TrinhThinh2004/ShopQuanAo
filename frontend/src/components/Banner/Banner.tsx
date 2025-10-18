@@ -6,6 +6,10 @@ import {
   A11y,
   Keyboard,
 } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "swiper/css/autoplay"
 
 // import ảnh
 import banner1 from "../../assets/Banner/banner1.jpg";
@@ -26,7 +30,7 @@ export default function Banner() {
       modules={[Autoplay, Navigation, Pagination, A11y, Keyboard]}
       slidesPerView={1}
       loop
-      speed={700}
+      speed={600}
       keyboard={{ enabled: true }}
       autoplay={{
         delay: 3500,
@@ -65,12 +69,11 @@ export default function Banner() {
 function BannerImage({ src, alt }: { src: string; alt: string }) {
   return (
     <div className="relative h-full w-full overflow-hidden rounded-xl">
-      {/* bỏ aspect-ratio, dùng chiều cao từ khung cha */}
       <img
         src={src}
         alt={alt}
-        loading="lazy"
         className="h-full w-full object-cover"
+       fetchPriority="high"
       />
     </div>
   );
